@@ -1,0 +1,250 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ziea's Pet Grooming Appointment</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #fff0f5;
+    margin: 0;
+    padding: 25px;
+    color: #59414c;
+}
+
+.container {
+    max-width: 650px;
+    margin: auto;
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 4px 15px #d9a8bb;
+}
+
+h1 {
+    text-align: center;
+    color: #d66b94;
+    font-size: 27px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #99717f;
+    margin-bottom: 25px;
+}
+
+h3 {
+    color: #d66b94;
+    border-bottom: 1px solid #f4cada;
+    padding-bottom: 8px;
+    margin-top: 25px;
+}
+
+label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 7px;
+    border: 1px solid #e8b8ca;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 25px;
+    border: none;
+    background: #df82a5;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 9px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #ca638b;
+}
+
+.receipt {
+    display: none;
+    background: #fff4f8;
+    border: 2px dashed #df82a5;
+    padding: 20px;
+    margin-top: 25px;
+    border-radius: 12px;
+    line-height: 1.8;
+}
+
+.receipt h2 {
+    text-align: center;
+    color: #d66b94;
+}
+
+.price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #d66b94;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 12px;
+    color: #aa8191;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🐾 ZIEA'S PET GROOMING 🐾</h1>
+<p class="subtitle">PET GROOMING APPOINTMENT SYSTEM</p>
+
+<form id="bookingForm">
+
+<h3>👤 Customer Information</h3>
+
+<label>Customer Name:</label>
+<input type="text" id="customer" placeholder="Enter your full name" required>
+
+<label>Contact Number:</label>
+<input type="tel" id="contact" placeholder="Enter contact number" required>
+
+<h3>🐶 Pet Information</h3>
+
+<label>Pet Name:</label>
+<input type="text" id="pet" placeholder="Enter pet name" required>
+
+<label>Pet Type:</label>
+<select id="petType" required>
+<option value="">Select Pet Type</option>
+<option>Dog</option>
+<option>Cat</option>
+</select>
+
+<h3>✂️ Grooming Services</h3>
+
+<label>Select Service:</label>
+<select id="service" required onchange="updatePrice()">
+<option value="">Choose a Service</option>
+<option value="200">Bathing - ₱200</option>
+<option value="300">Haircut - ₱300</option>
+<option value="150">Nail Trimming - ₱150</option>
+<option value="500">Full Grooming - ₱500</option>
+</select>
+
+<p class="price">Total Price: ₱<span id="price">0</span></p>
+
+<h3>📅 Appointment Details</h3>
+
+<label>Appointment Date:</label>
+<input type="date" id="date" required>
+
+<label>Appointment Time:</label>
+<select id="time" required>
+<option value="">Select Time</option>
+<option>9:00 AM</option>
+<option>10:00 AM</option>
+<option>11:00 AM</option>
+<option>1:00 PM</option>
+<option>2:00 PM</option>
+<option>3:00 PM</option>
+<option>4:00 PM</option>
+</select>
+
+<button type="submit">BOOK APPOINTMENT</button>
+
+</form>
+
+<div class="receipt" id="receipt">
+<h2>🐾 BOOKING RECEIPT 🐾</h2>
+
+<p><b>Customer Name:</b> <span id="rCustomer"></span></p>
+<p><b>Contact:</b> <span id="rContact"></span></p>
+<p><b>Pet Name:</b> <span id="rPet"></span></p>
+<p><b>Pet Type:</b> <span id="rType"></span></p>
+<p><b>Service:</b> <span id="rService"></span></p>
+<p><b>Appointment Date:</b> <span id="rDate"></span></p>
+<p><b>Appointment Time:</b> <span id="rTime"></span></p>
+<p class="price">Total Payment: ₱<span id="rPrice"></span></p>
+
+<h3>✅ APPOINTMENT BOOKED SUCCESSFULLY!</h3>
+<p style="text-align:center;">THANK YOU FOR CHOOSING ZIEA'S PET GROOMING! ♡</p>
+
+<button type="button" onclick="window.print()">PRINT RECEIPT</button>
+</div>
+
+<div class="footer">
+Made by Zoethyrei Allavado ♡ | Ziea's Pet Grooming
+</div>
+
+</div>
+
+<script>
+const dateInput = document.getElementById("date");
+dateInput.min = new Date().toLocaleDateString("en-CA");
+
+function updatePrice() {
+    let price = document.getElementById("service").value;
+    document.getElementById("price").textContent = price || 0;
+}
+
+document.getElementById("bookingForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    let service = document.getElementById("service");
+    let date = document.getElementById("date").value;
+
+    if (date < dateInput.min) {
+        alert("Please choose a valid appointment date.");
+        return;
+    }
+
+    document.getElementById("rCustomer").textContent =
+        document.getElementById("customer").value;
+
+    document.getElementById("rContact").textContent =
+        document.getElementById("contact").value;
+
+    document.getElementById("rPet").textContent =
+        document.getElementById("pet").value;
+
+    document.getElementById("rType").textContent =
+        document.getElementById("petType").value;
+
+    document.getElementById("rService").textContent =
+        service.options[service.selectedIndex].text;
+
+    document.getElementById("rDate").textContent = date;
+
+    document.getElementById("rTime").textContent =
+        document.getElementById("time").value;
+
+    document.getElementById("rPrice").textContent = service.value;
+
+    document.getElementById("receipt").style.display = "block";
+
+    document.getElementById("receipt").scrollIntoView({
+        behavior: "smooth"
+    });
+});
+</script>
+
+</body>
+</html>
